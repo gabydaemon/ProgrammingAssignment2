@@ -1,44 +1,47 @@
-## Put comments here that give an overall description of what your
-## functions do
-
-## Write a short comment describing this function
-
-makeCacheMatrix <- function(x = matrix()) {
-       ##placeholder var
-        inv <- NULL
-       ## varName$set will set the matrix
-        set <- function(y) {
-                x <<- y
-                inv <<- NULL
+makeCacheMatrix <- function(ogMatrix = matrix()) {
+        matrixInverse <- NULL
+        
+        set <- function(funcMatrix){
+                ogMatrix <<- funcMatrix
+                matrixInverse<<- NULL
         }
-       ## return x
-        get <- function() x
-       ## inverse matrix
-        setInverse <- function(inverse) inv <<- inverse
-       ## return matrix inverse
-        getInverse <- function() inv
-        list(set = set,
-             get = get,
-             setInverse = setInverse,
-             getInverse = getInverse)
+        
+        get <- function(){
+                ogMatrix
+        }
+        
+        setInv <- function(inv){
+                matrixInverse <<- inv
+        }
+        
+        getInv <- function(){
+                matrixInverse
+        }
+        list( set = set, 
+              get = get, 
+              setInverse = setInv, 
+              getInverse = getInv)
 }
 
 
-## Write a short comment describing this function
-
-cacheSolve <- function(x, ...) {
-       ##store inverse previously computed into inv
-        inv <- x$getInverse()
-       ## if inv isn't empty
-        if (!is.null(inv)) {
-                message("getting cached data")
-                return(inv)
+cacheSolve <- function(func, ...) {
+        ## check if inverse has already been set
+        calcInverse <- func$getInv()
+        ## is it empty? if not, run this block
+        if(!is.null(calcInverse)){
+                message("getting cached inverse")
+                return(calcInverse)
         }
-       ## store previously computed matrix
-        mat <- x$get()
-        inv <- solve(mat, ...)
-        x$setInverse(inv)
-       
-       
-        inv
+        
+        ## get the base matrix to inverse
+        baseMatrix <- func$get()
+        ## inverse nbase matrix and put that shit 
+        ## into a new variable
+        calcInverse <- solve(baseMatrix, ...)
+        
+        func$setInv(calcInverse)
+        
+        calcInverse
 }
+
+##this took me so long to write!!!!!
